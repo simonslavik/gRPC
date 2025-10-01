@@ -24,16 +24,34 @@ function main() {
             console.log('Greeting:', response.message);
         });
     */
-   client.GetNumbers({count: 5});
-   call.on('data', (numberResponse) => {
-       console.log(`Order: ${numberResponse.order}, Number: ${numberResponse.number}`);
-   });
-   call.on('end', () => {
-       console.log('Stream ended');
-   });
-   call.on('error', (error) => {
-       console.error('Error in stream:', error);
-   });
+/*
+    // Initiates a server streaming RPC call to GetNumbers with a count of 5
+    const call = client.GetNumbers({count: 5});
+
+    // Handles each data event received from the stream
+    call.on('data', (numberResponse) => {
+         // Logs the order and number received from the server
+         console.log(`Order: ${numberResponse.order}, Number: ${numberResponse.number}`);
+    });
+
+    // Handles the end event when the server has finished sending data
+    call.on('end', () => {
+         console.log('Stream ended');
+    });
+
+    // Handles any errors that occur during the streaming RPC
+    call.on('error', (error) => {
+         console.error('Error in stream:', error);
+    });
+*/
+    client.SumNumbers((err, response) => {
+        if(err) return console.error(err);
+        console.log("Sum: ", response.sum);
+    });
+    call.write({number: 10});
+    call.write({number: 20});
+    call.write({number: 30});
+    call.end();
 }
 
 main();

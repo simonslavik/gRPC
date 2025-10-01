@@ -29,10 +29,20 @@ function getNumbers(call){
     }, 1000);
 }
 
+function sumNumbers(call, callback){
+    let sum = 0;
+    call.on('data', (sumRequest) => {
+        sum += sumRequest.number;
+    });
+    call.on('end', () => {
+        callback(null, {sum: sum});
+    });
+}
+
 
 function main() {
   const server = new grpc.Server();
-  server.addService(proto.Greeter.service, {SayHello: sayHello, GetNumbers: getNumbers });
+  server.addService(proto.Greeter.service, {SayHello: sayHello, GetNumbers: getNumbers, SumNumbers: sumNumbers});
   server.bindAsync('0.0.0.0:5050', grpc.ServerCredentials.createInsecure(), (error, port) => {
     if (error) {
       console.error('Error starting gRPC server:', error);
